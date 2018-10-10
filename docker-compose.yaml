@@ -1,0 +1,38 @@
+--- 
+networks: 
+  backend: 
+    driver: bridge
+  frontend: 
+    driver: bridge
+services: 
+  mysql_db: 
+    environment: 
+      MYSQL_DATABASE: wordpress
+      MYSQL_PASSWORD: sai123
+      MYSQL_ROOT_PASSWORD: kokki_kumaaru
+      MYSQL_USER: karthik
+    image: mysql
+    networks: 
+      - frontend
+      - backend
+    restart: always
+    volumes: 
+      - "./volumes/mysql:/var/lib/mysql"
+  web_app: 
+    depends_on: 
+      - mysql_db
+    environment: 
+      WORDPRESS_DB_HOST: "mysql_db:3306"
+      WORDPRESS_DB_PASSWORD: sai123
+      WORDPRESS_DB_USER: karthik
+    image: wordpress
+    links: 
+      - mysql_db
+    networks: 
+      - frontend
+    ports: 
+      - "8080:80"
+    restart: always
+    volumes: 
+      - "./volumes/wordpress:/var/www/html"
+version: "3.1"
